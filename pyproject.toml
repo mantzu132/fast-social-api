@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.11"
 fastapi = {extras = ["all"], version = "^0.95.1"}
 psycopg2 = "^2.9.6"
+sqlalchemy = "^2.0.12"
 
 
 [build-system]
