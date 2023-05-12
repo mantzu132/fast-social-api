@@ -1,5 +1,5 @@
 from .database import Session
-from . import model, schema
+from . import model, schema, utils
 from fastapi import Depends, FastAPI, HTTPException, status
 
 
@@ -20,9 +20,10 @@ def get_db():
 
 app = FastAPI()
 
-# ---------------------------------------------------------------- ENDPOINTS START HERE
+# ---------------------------------------------------------------- POST PATHS START HERE
 
 
+# Get all posts
 @app.get("/posts", response_model=list[schema.Post])
 def get_all_posts(db: Session = Depends(get_db)):
     posts = db.query(model.Post).all()
@@ -32,11 +33,11 @@ def get_all_posts(db: Session = Depends(get_db)):
 # Create a post and add it to the posts table
 @app.post("/posts", status_code=status.HTTP_201_CREATED, response_model=schema.Post)
 def create_post(post: schema.PostBase, db: Session = Depends(get_db)):
-    new_post = model.Post(**post.dict())
-    db.add(new_post)
+    new_user = model.Post(**post.dict())
+    db.add(new_user)
     db.commit()
-    db.refresh(new_post)
-    return new_post
+    db.refresh(new_user)
+    return new_user
 
 
 # Get a specific post by id from the posts table.
@@ -74,3 +75,14 @@ def update_post(
         db.refresh(post)
         return post
     raise HTTPException(status_code=404, detail="Post not found")
+
+
+# -------------- user
+@app.post("/users", response_model=schema.UserOut)
+def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
+    hashed_password = utils.hash_password(user.password)
+    new_user = model.User(email=user.email, password=hashed_password)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
