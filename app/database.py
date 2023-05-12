@@ -8,4 +8,13 @@ db_url = f"postgresql://{os.environ['DB_USER']}:{os.environ['DB_PASSWORD']}@loca
 engine = create_engine(db_url)
 Session = sessionmaker(bind=engine)
 
+
+def get_db():
+    db = Session()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
 __all__ = ["engine", "Session"]
