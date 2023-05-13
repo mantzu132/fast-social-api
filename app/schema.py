@@ -13,6 +13,7 @@ class CreatePost(PostBase):
     pass
 
 
+# Schema for our response of returning a post
 class Post(PostBase):
     created_at: datetime
 
@@ -34,9 +35,23 @@ class UserCreate(BaseModel):
         }
 
 
+# Schema for the response of returning a user
 class UserOut(BaseModel):
     id: int
     email: EmailStr
 
     class Config:
         orm_mode = True
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "email": "XXXXXXXXXXXXXXXXXXXX",
+                "password": "secure_password",
+            }
+        }
