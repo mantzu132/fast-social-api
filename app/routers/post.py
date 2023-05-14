@@ -1,5 +1,5 @@
 from fastapi import Depends, HTTPException, status, APIRouter
-from .. import model, schema
+from .. import model, schema, oauth2
 from ..database import Session, get_db
 
 # create a router object
@@ -15,12 +15,16 @@ def get_all_posts(db: Session = Depends(get_db)):
 
 # Create a post and add it to the posts table
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schema.Post)
-def create_post(post: schema.PostBase, db: Session = Depends(get_db)):
-    new_user = model.Post(**post.dict())
-    db.add(new_user)
+def create_post(
+    post: schema.PostBase,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(oauth2.get_current_user),
+):
+    new_post = model.Post(**post.dict())
+    db.add(new_post)
     db.commit()
-    db.refresh(new_user)
-    return new_user
+    db.refresh(new_post)
+    return new_post
 
 
 # Get a specific post by id from the posts table.

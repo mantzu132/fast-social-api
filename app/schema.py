@@ -1,6 +1,7 @@
 # Schema for fastapi
 from datetime import datetime
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 
 class PostBase(BaseModel):
@@ -44,14 +45,12 @@ class UserOut(BaseModel):
         orm_mode = True
 
 
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
+# Schema for the user providing us the token
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "email": "XXXXXXXXXXXXXXXXXXXX",
-                "password": "secure_password",
-            }
-        }
+
+# Schema for our token data (the data that we embedded into the token) TokenData
+class JWTPayload(BaseModel):
+    id: Optional[str] = None
