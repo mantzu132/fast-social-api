@@ -53,4 +53,4 @@ class Token(BaseModel):
 
 # Schema for our token data (the data that we embedded into the token) TokenData
 class JWTPayload(BaseModel):
-    id: Optional[str] = None
+    user_id: Optional[int] = None
