@@ -6,6 +6,10 @@ from .database import engine
 Base = declarative_base()
 
 
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
+
+
 class Post(Base):
     __tablename__ = "posts"
 
@@ -16,6 +20,8 @@ class Post(Base):
     created_at = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
     )
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user = relationship("User", back_populates="posts")
 
 
 class User(Base):
@@ -27,6 +33,7 @@ class User(Base):
     created_at = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
     )
+    posts = relationship("Post", back_populates="user")
 
 
 Base.metadata.create_all(engine)

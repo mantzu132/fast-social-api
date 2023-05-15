@@ -14,9 +14,20 @@ class CreatePost(PostBase):
     pass
 
 
+# Schema for the response of returning a user
+class UserOut(BaseModel):
+    id: int
+    email: EmailStr
+
+    class Config:
+        orm_mode = True
+
+
 # Schema for our response of returning a post
-class Post(PostBase):
+class ReturnPost(PostBase):
     created_at: datetime
+    user_id: int
+    user: UserOut
 
     class Config:
         orm_mode = True
@@ -34,15 +45,6 @@ class UserCreate(BaseModel):
                 "password": "secure_password",
             }
         }
-
-
-# Schema for the response of returning a user
-class UserOut(BaseModel):
-    id: int
-    email: EmailStr
-
-    class Config:
-        orm_mode = True
 
 
 # Schema for the user providing us the token
