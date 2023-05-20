@@ -1,9 +1,10 @@
 from sqlalchemy import create_engine
 import os
 from sqlalchemy.orm import sessionmaker
+from .config import settings
 
 # db_url = "postgresql://username:password@localhost/dbname"
-db_url = f"postgresql://{os.environ['DB_USER']}:{os.environ['DB_PASSWORD']}@localhost/{os.environ['DB_NAME']}"
+db_url = f"postgresql://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}/{settings.DB_NAME}"
 
 engine = create_engine(db_url)
 Session = sessionmaker(bind=engine)
