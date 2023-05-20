@@ -1,15 +1,34 @@
 from fastapi import Depends, HTTPException, status, APIRouter
 from .. import model, schema, oauth2
 from ..database import Session, get_db
+from typing import Optional
 
 # create a router object
 router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
 # Get all posts
+
+
 @router.get("/", response_model=list[schema.ReturnPost])
-def get_all_posts(db: Session = Depends(get_db)):
-    posts = db.query(model.Post).all()
+def get_all_posts(
+    db: Session = Depends(get_db),
+    limit: Optional[int] = None,
+    offset: Optional[int] = None,
+    title: Optional[str] = None,
+):
+    query = db.query(model.Post)
+
+    if title:
+        query = query.filter(model.Post.title.ilike(f"%{title}%"))
+
+    if limit:
+        query = query.limit(limit)
+
+    if offset:
+        query = query.offset(offset)
+
+    posts = query.all()
     return posts
 
 

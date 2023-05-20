@@ -26,7 +26,6 @@ class UserOut(BaseModel):
 # Schema for our response of returning a post
 class ReturnPost(PostBase):
     created_at: datetime
-    user_id: int
     user: UserOut
 
     class Config:
