@@ -1,6 +1,6 @@
 # Schema for fastapi
 from datetime import datetime
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, conint
 from typing import Optional
 
 
@@ -55,3 +55,10 @@ class Token(BaseModel):
 # Schema for our token data (the data that we embedded into the token) TokenData
 class JWTPayload(BaseModel):
     user_id: Optional[int] = None
+
+
+# Schema for upvoting a post
+# if dir 1 = upvote, if dir = 0 = remove the upvote
+class Vote(BaseModel):
+    post_id: int
+    dir: conint(ge=0, le=1)
