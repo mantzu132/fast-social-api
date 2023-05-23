@@ -32,6 +32,11 @@ class ReturnPost(PostBase):
         orm_mode = True
 
 
+class ReturnPostWithVotes(BaseModel):
+    post: ReturnPost
+    vote_count: int
+
+
 class UserCreate(BaseModel):
     email: EmailStr
     password: str

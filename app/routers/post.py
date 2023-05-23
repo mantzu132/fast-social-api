@@ -2,23 +2,27 @@ from fastapi import Depends, HTTPException, status, APIRouter
 from .. import model, schema, oauth2
 from ..database import Session, get_db
 from typing import Optional
+from sqlalchemy import func
 
 # create a router object
 router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
-# Get all posts
-
-
-@router.get("/", response_model=list[schema.ReturnPost])
+@router.get("/", response_model=list[schema.ReturnPostWithVotes])
 def get_all_posts(
     db: Session = Depends(get_db),
     limit: Optional[int] = None,
     offset: Optional[int] = None,
     title: Optional[str] = None,
 ):
-    query = db.query(model.Post)
+    # First query that gets all posts along with the count of votes for each post
+    query = (
+        db.query(model.Post, func.count(model.Votes.post_id).label("vote_count"))
+        .outerjoin(model.Votes, model.Post.id == model.Votes.post_id)
+        .group_by(model.Post.id)
+    )
 
+    # Query parameters to filter by title, limit amount of posts shown and offset (skip through) a number of posts.
     if title:
         query = query.filter(model.Post.title.ilike(f"%{title}%"))
 
@@ -29,10 +33,11 @@ def get_all_posts(
         query = query.offset(offset)
 
     posts = query.all()
-    return posts
+
+    # Since the return from query is a list of tuples, we need to unpack the tuples and create a list of dictionaries
+    return [{"post": post, "vote_count": vote_count} for post, vote_count in posts]
 
 
-# Create a post and add it to the posts table
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schema.ReturnPost)
 def create_post(
     post: schema.PostBase,
@@ -46,16 +51,23 @@ def create_post(
     return new_post
 
 
-# Get a specific post by id from the posts table.
-@router.get("/{post_id}", response_model=schema.ReturnPost)
+@router.get("/{post_id}", response_model=schema.ReturnPostWithVotes)
 def get_post(post_id: int, db: Session = Depends(get_db)):
-    post = db.query(model.Post).get(post_id)
-    if post:
-        return post
+    post_with_votes = (
+        db.query(model.Post, func.count(model.Votes.post_id).label("vote_count"))
+        .outerjoin(model.Votes, model.Post.id == model.Votes.post_id)
+        .filter(model.Post.id == post_id)
+        .group_by(model.Post.id)
+        .first()
+    )
+
+    if post_with_votes:
+        post, vote_count = post_with_votes
+        return {"post": post, "vote_count": vote_count}
+
     raise HTTPException(status_code=404, detail="Post not found")
 
 
-# Delete a post if we find one
 @router.delete("/{post_id}", status_code=status.HTTP_200_OK)
 def delete_post(
     post_id: int,
@@ -74,7 +86,6 @@ def delete_post(
     return {"detail": "Post deleted"}
 
 
-# Updates a post by searching for the post id in posts table.
 @router.put("/{post_id}", response_model=schema.ReturnPost)
 def update_post(
     post_id: int,

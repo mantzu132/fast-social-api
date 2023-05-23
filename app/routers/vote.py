@@ -7,7 +7,6 @@ from ..database import Session, get_db
 router = APIRouter(prefix="/vote", tags=["Vote"])
 
 
-# add an user to the table of users
 @router.post("/")
 def upvote_post(
     vote: schema.Vote,
