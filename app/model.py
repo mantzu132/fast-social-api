@@ -1,7 +1,6 @@
 from sqlalchemy import TIMESTAMP, Column, Integer, String, Boolean
 from sqlalchemy.sql.expression import text
 from sqlalchemy.ext.declarative import declarative_base
-from .database import engine
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -49,4 +48,4 @@ class Votes(Base):
     post = relationship("Post", backref="votes")
 
 
-Base.metadata.create_all(engine)
+# Base.metadata.create_all(engine)
