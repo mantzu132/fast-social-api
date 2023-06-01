@@ -6,8 +6,6 @@ services:
       - .env
     depends_on:
       - db
-    volumes:
-      - ./:/fast-social-api:ro
 
   db:
     image: postgres:13
