@@ -1,6 +1,6 @@
 from sqlalchemy import TIMESTAMP, Column, Integer, String, Boolean
 from sqlalchemy.sql.expression import text
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 

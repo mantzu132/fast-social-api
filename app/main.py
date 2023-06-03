@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
+
+
 # ---------- ENABLING CORS
 origins = [
     "http://localhost:3000",
