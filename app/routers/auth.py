@@ -15,11 +15,8 @@ def login(
         db.query(model.User).filter(model.User.email == form_data.username).first()
     )
 
-    if not db_user:
+    if not db_user or not utils.verify_password(form_data.password, db_user.password):
         raise HTTPException(status_code=404, detail="Invalid Credentials")
-
-    if not utils.verify_password(form_data.password, db_user.password):
-        raise HTTPException(status_code=400, detail="Invalid Credentials")
 
     # create an access token
     access_token = create_jwt_token(data={"user_id": db_user.id})

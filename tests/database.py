@@ -15,7 +15,7 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engin
 
 # These fixtures will be called before each test that needs it.
 # test_db will create the tables in our db, and then close/drop the database after the test is done.
-@pytest.fixture(scope="function")
+@pytest.fixture
 def test_db():
     model.Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
