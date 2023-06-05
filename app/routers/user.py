@@ -19,8 +19,6 @@ def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
 
 
 # get user by id from the table of users
-
-
 @router.get("/{user_id}", response_model=schema.UserOut)
 def get_user(user_id: int, db: Session = Depends(get_db)):
     user = db.query(model.User).get(user_id)

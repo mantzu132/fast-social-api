@@ -40,7 +40,7 @@ def get_all_posts(
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schema.ReturnPost)
 def create_post(
-    post: schema.PostBase,
+    post: schema.CreatePost,
     db: Session = Depends(get_db),
     current_user: model.User = Depends(oauth2.get_current_user),
 ):
@@ -48,7 +48,7 @@ def create_post(
     db.add(new_post)
     db.commit()
     db.refresh(new_post)
-    return "hello"
+    return new_post
 
 
 @router.get("/{post_id}", response_model=schema.ReturnPostWithVotes)
