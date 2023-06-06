@@ -1,4 +1,6 @@
 # fast-social-api
+![2023_06_06_11_30_30_test_posts py_FastAPI_Project_Visual_Studio_Code](https://github.com/mantzu134/fast-social-api/assets/25063550/62a743d7-c372-40c0-8aa5-829f9236ce75)
+
 ## Project Description
 This is a comprehensive learning project I created to understand and implement concepts related to REST API design, database management, and deployment with Docker. The main objective was to create a robust FastAPI application that manages users and posts, offering standard CRUD operations.
 
@@ -40,3 +42,6 @@ You should now be able to navigate to http://localhost:8000 to see your applicat
 4. **Start the Docker containers** `docker-compose up`
 
 You should now be able to navigate to http://localhost to see your application running.
+
+
+
