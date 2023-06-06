@@ -35,3 +35,12 @@ def test_unauthorized_delete_post(test_db, client, test_posts, override_get_db):
     response = client.delete(f"/posts/{test_posts[1].id}", headers=headers)
 
     assert response.status_code == 401
+
+
+def update_post(jwt_token, test_db, client, test_posts, override_get_db):
+    headers = {"Authorization": f"Bearer {jwt_token}"}
+    test_updated_posts = {"title": "test@user.com", "content": "testpassword"}
+    response = client.put("/posts/1", json=test_updated_posts, headers=headers)
+
+    assert response.status_code == 200
+    assert response.json()["title"] == test_updated_posts["title"]
